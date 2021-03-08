@@ -17,10 +17,10 @@ void main()
   vec3 normal = normalize(verts.xyz);
   
  
-  r = cos(qnoise + (r_color));
-  g = cos(qnoise + g_color);
-  b = cos(qnoise + (b_color));
+  r = cos(qnoise * (r_color));
+  g = cos(qnoise * g_color);
+  b = cos(qnoise * (b_color));
     
-   outputColor = vec4 (r,g,b,1 );
+   outputColor = vec4 (r,g,b,1.0 );
   
 }

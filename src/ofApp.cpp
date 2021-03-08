@@ -2,8 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    
-    ofEnableArbTex();
+    ofEnableSmoothing();
     ofEnableAntiAliasing();
     ofEnableSmoothing();
     glShadeModel(GL_SMOOTH);
@@ -13,16 +12,13 @@ void ofApp::setup(){
     ofBackground(ofColor::black);
     shader.load("shader");
 
-    mesh.setMode(OF_PRIMITIVE_TRIANGLES);
+    mesh.setMode(OF_PRIMITIVE_LINES);
 
     ico.set(1,6);
     mesh =ico.getMesh();
-     this->gui.setup();
-    //ImGui::StyleColorsDark();
+    this->gui.setup();
      gui.setTheme(new MyTheme());
     this->guiVisible = true;
-   // ofSetRectMode(OF_RECTMODE_CENTER);
-
 
     ambient.setAmbientColor(ofFloatColor::white);
     point.setPointLight();     
@@ -40,20 +36,21 @@ void ofApp::setup(){
         init.add(red);
         init.add(green);
         init.add(blue);
+        
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-     cam.setPosition(0,0,zoom);
+    cam.setPosition(0,0,zoom);
+   
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-//vector<ofMeshFace> triangles = ico.getMesh().getUniqueFaces();
 cam.begin();
 ofSetColor(255);
-//ofEnableLighting();
+ofEnableLighting();
 point.enable();
 ambient.enable();
 shader.begin();
@@ -71,13 +68,14 @@ shader.begin();
     shader.setUniform1f("g_color", green);
     shader.setUniform1f("b_color",blue);
     shader.setUniform1i("speed",speed);
-       // ico.draw();
-    ofScale(1,1,1);
+        //ico.draw();
+    ofScale(2,2,2);
+   
        mesh.draw();
       
       
     shader.end();
-    // point.draw();
+     point.draw();
 cam.end();
   
 // Gui
@@ -86,15 +84,6 @@ cam.end();
 	{
 		this->mouseOverGui = this->imGui();
 	}
-	if (this->mouseOverGui)
-	{
-		//this->cam.disableMouseInput();
-	}
-	else
-	{
-		//this->cam.enableMouseInput();
-	}
-     // this->imGui();
 
 }
 

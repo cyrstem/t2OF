@@ -17,10 +17,12 @@ class ofApp : public ofBaseApp{
 		ofMesh mesh;
 		ofIcoSpherePrimitive ico;
 		ofCamera cam;
-		
+		//ofEasyCam cam;
 
 		ofImage imgSave;
 		ofLight ambient, point;
+		 
+
 
 	private:	
 	bool imGui();
