@@ -2,7 +2,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofEnableSmoothing();
     ofEnableAntiAliasing();
     ofEnableSmoothing();
     glShadeModel(GL_SMOOTH);
@@ -36,18 +35,29 @@ void ofApp::setup(){
         init.add(red);
         init.add(green);
         init.add(blue);
+
+    //fbo
+    ofFboSettings s;
+    s.width = ofGetWidth();
+    s.height =ofGetHeight();
+    s.useDepth = true;
+    s.internalformat =GL_RGBA32F;
+    fbo.allocate(s);
         
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     cam.setPosition(0,0,zoom);
+    fbo.begin();
+    ofClear(0);
+    fbo.end();
    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+fbo.begin();
 cam.begin();
 ofSetColor(255);
 ofEnableLighting();
@@ -77,7 +87,8 @@ shader.begin();
     shader.end();
      point.draw();
 cam.end();
-  
+fbo.end();
+fbo.draw(0,0); 
 // Gui
 	this->mouseOverGui = false;
 	if (this->guiVisible)
@@ -98,6 +109,10 @@ void ofApp::keyPressed(int key){
         ofToggleFullscreen();
     }
 
+}
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h){
+    fbo.allocate(ofGetWidth(),ofGetHeight()); 
 }
 //--------------------------------------------------------------
 bool ofApp::imGui()

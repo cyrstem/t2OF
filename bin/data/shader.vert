@@ -215,10 +215,12 @@ void main(){
  
     noise = (1.0 * waves) * turbulence (decay * abs(normal + time ));
     qnoise = (2.5 *  - eqcolor) * turbulence( decay * abs(normal + time));
-    float b = pnoise( complex * (position.xyz) + vec3( 1.0 * time ), vec3( 100.0 ) );
+    float b = pnoise( complex * (position.xyz) + vec3( 1.0 * time
+    
+     ), vec3( 100.0 ) );
     
      if (fragment == true) {
-      displacement = - sin(noise) + normalize(b * 0.5);
+      displacement = - sin(noise) + normalize(b * 1.5);
     } else {
       displacement = - sin(noise) + cos(b *0.5);
     }

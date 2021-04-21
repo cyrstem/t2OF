@@ -21,6 +21,6 @@ void main()
   g = cos(qnoise * g_color);
   b = cos(qnoise * (b_color));
     
-   outputColor = vec4 (r,g,b,1.0 );
+   outputColor = vec4 (r,g,b,1. );
   
 }

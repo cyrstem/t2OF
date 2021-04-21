@@ -12,6 +12,7 @@ class ofApp : public ofBaseApp{
 		void draw();
 		void exit();
 		void keyPressed(int key);
+		void windowResized(int w,int h);
 		ofxAutoReloadedShader shader;
 		
 		ofMesh mesh;
@@ -21,6 +22,7 @@ class ofApp : public ofBaseApp{
 
 		ofImage imgSave;
 		ofLight ambient, point;
+		ofFbo fbo;
 		 
 
 
