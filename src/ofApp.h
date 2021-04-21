@@ -36,9 +36,7 @@ class ofApp : public ofBaseApp{
 		void XML_load_app(ofParameterGroup &g, string path);
 		void XML_save_app(ofParameterGroup &g, string path);
 	//end save data
-
 	ofParameterGroup init{"Setup"};
-
 	ofParameter<float>speed{"speed",0.1,0.001,1};
 	ofParameter<float>zoom{"zoom",7.6,-10.0,100};
 
