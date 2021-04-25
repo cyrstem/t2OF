@@ -1,2 +1,3 @@
 ofxAutoReloadedShader
 ofxImGui
+ofxPostProcessing

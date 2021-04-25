@@ -1,4 +1,4 @@
-#version 150
+#version 150    
  // GLSL textureless classic 3D noise "cnoise",
   // with an RSL-style periodic variant "pnoise".
   // Author:  Stefan Gustavson (stefan.gustavson@liu.se)
@@ -11,7 +11,7 @@
   // Distributed under the MIT license. See LICENSE file.
   // https://github.com/ashima/webgl-noise
   //
-  precision highp float;
+  
 
 
   vec3 mod289(vec3 x)
@@ -220,9 +220,9 @@ void main(){
      ), vec3( 100.0 ) );
     
      if (fragment == true) {
-      displacement = - sin(noise) + normalize(b * 1.5);
+      displacement = - sin(noise) + normalize(b * 31.5);
     } else {
-      displacement = - sin(noise) + cos(b *0.5);
+      displacement = - sin(noise) + cos(b *0.005);
     }
 
    vec3 newPosition = (position.xyz) + (normal * displacement);

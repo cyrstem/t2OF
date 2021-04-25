@@ -3,9 +3,8 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofEnableAntiAliasing();
-    ofEnableSmoothing();
-    glShadeModel(GL_SMOOTH);
     ofEnableDepthTest();
+    ofDisableArbTex();
     ofSetWindowShape(1400,900);
     ofBackground(ofColor::black);
     shader.load("shader");
@@ -40,9 +39,10 @@ void ofApp::setup(){
     s.width = ofGetWidth();
     s.height =ofGetHeight();
     s.useDepth = true;
-    s.numSamples =8;
-    s.internalformat =GL_RGBA32F;
+    s.numSamples =16;
+    s.internalformat =GL_RGBA;
     fbo.allocate(s);
+    
         
 }
 
