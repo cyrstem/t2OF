@@ -1,4 +1,6 @@
 #version 150
+precision highp float;
+
 in vec4 verts;
 out vec4 outputColor;
 in float qnoise;
@@ -11,13 +13,11 @@ uniform float b_color;
 
 void main()
 {
+
   float  r,g,b;
-  
-  
   vec3 normal = normalize(verts.xyz);
   
- 
-  r = cos(qnoise * (r_color));
+  r = cos(qnoise * ( r_color));
   g = cos(qnoise * g_color);
   b = cos(qnoise * (b_color));
     

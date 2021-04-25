@@ -1,4 +1,6 @@
-#version 150    
+#version 150 
+precision highp float;
+
  // GLSL textureless classic 3D noise "cnoise",
   // with an RSL-style periodic variant "pnoise".
   // Author:  Stefan Gustavson (stefan.gustavson@liu.se)

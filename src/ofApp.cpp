@@ -3,6 +3,7 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofEnableAntiAliasing();
+    ofSetLogLevel("ofFbo", OF_LOG_VERBOSE);
     ofEnableDepthTest();
     ofDisableArbTex();
     ofSetWindowShape(1400,900);
@@ -40,6 +41,8 @@ void ofApp::setup(){
     s.height =ofGetHeight();
     s.useDepth = true;
     s.numSamples =16;
+    s.useStencil = true;
+    s.depthStencilAsTexture =true;
     s.internalformat =GL_RGBA;
     fbo.allocate(s);
     
