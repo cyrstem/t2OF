@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <Setup>
-	<speed>0.119</speed>
-	<zoom>17.915</zoom>
-	<decay>0.148</decay>
-	<waves>41.457</waves>
-	<eqColor>11.432</eqColor>
-	<Red>0.4</Red>
-	<Green>0.4</Green>
-	<Blue>0.4</Blue>
+	<speed>82.915</speed>
+	<zoom>23.995</zoom>
+	<decay>0.063</decay>
+	<waves>58.543</waves>
+	<eqColor>15.704</eqColor>
+	<Red>0.671</Red>
+	<Green>0.384</Green>
+	<Blue>0.711</Blue>
 </Setup>

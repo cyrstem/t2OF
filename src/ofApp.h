@@ -23,8 +23,9 @@ class ofApp : public ofBaseApp{
 		ofImage imgSave;
 		ofLight ambient, point;
 		ofFbo fbo;
-		 
-
+		ofSoundPlayer player;
+		 static constexpr size_t nBandsToGet = 128;
+		 std::array<float, nBandsToGet>fftSmoothed{{0}};
 
 	private:	
 	bool imGui();

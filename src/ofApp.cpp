@@ -3,7 +3,6 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofEnableAntiAliasing();
-    ofSetLogLevel("ofFbo", OF_LOG_VERBOSE);
     ofEnableDepthTest();
     ofDisableArbTex();
     ofSetWindowShape(1400,900);
@@ -12,7 +11,7 @@ void ofApp::setup(){
 
     mesh.setMode(OF_PRIMITIVE_TRIANGLES);
 
-    ico.set(1,6);
+    ico.set(1,8);
     mesh =ico.getMesh();
     this->gui.setup();
      gui.setTheme(new MyTheme());
@@ -46,11 +45,15 @@ void ofApp::setup(){
     s.internalformat =GL_RGBA;
     fbo.allocate(s);
     
-        
+        player.load("09 - Sea Castle.mp3");
+        // r = 0.0;
+        // g = 0.0;
+        // b = 0.0;
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+
     cam.setPosition(0,0,zoom);
     fbo.begin();
     ofClear(0);
@@ -60,12 +63,29 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+ float * val = ofSoundGetSpectrum(nBandsToGet);
+ float width = (float)(5*128) / nBandsToGet;
+ for (int i = 0;i < nBandsToGet; i++){
+		
+		// let the smoothed value sink to zero:
+		fftSmoothed[i] *= 0.96f;
+		//ofLog()<<fftSmoothed[i];
+		// take the max, either the smoothed or the incoming:
+		if (fftSmoothed[i] < val[i]) fftSmoothed[i] = val[i];
+		ofDrawRectangle(100+i *width ,ofGetHeight()-100,width, -(fftSmoothed[i]*200));
+        if(val[i]){
+            ofLog()<<"bang?";
+        }
+	}
+    
 fbo.begin();
 cam.begin();
 ofSetColor(255);
 ofEnableLighting();
 point.enable();
 ambient.enable();
+
+
 shader.begin();
     shader.setUniform1f("perlins",1.0);
     shader.setUniform1f("time",ofGetElapsedTimef());
@@ -90,6 +110,13 @@ shader.begin();
     shader.end();
      point.draw();
 cam.end();
+
+// for (int i = 0; i < bandsToGet; i++)
+// {
+//    ofDrawRectangle(100+i *width ,ofGetHeight()-100,width, -(val[i]*400));
+//    ofLog()<<val[i];
+// }
+
 fbo.end();
 fbo.draw(0,0); 
 // Gui
@@ -98,6 +125,7 @@ fbo.draw(0,0);
 	{
 		this->mouseOverGui = this->imGui();
 	}
+
 
 }
 
@@ -111,11 +139,21 @@ void ofApp::keyPressed(int key){
     {
         ofToggleFullscreen();
     }
+    if (key == 'p')
+    {
+        player.play();
+    }
+    if (key == 's')
+    {
+        player.stop();
+    }
+    
+    
 
 }
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-    fbo.allocate(ofGetWidth(),ofGetHeight()); 
+    fbo.allocate(ofGetWidth(),ofGetHeight(),16); 
 }
 //--------------------------------------------------------------
 bool ofApp::imGui()
