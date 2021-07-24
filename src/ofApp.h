@@ -4,6 +4,7 @@
 #include "ofxAutoReloadedShader.h"
 #include "ofxImGui.h"
 #include "MyTheme.h"
+#include "ofxMaxim.h"
 class ofApp : public ofBaseApp{
 
 	public:
@@ -23,9 +24,23 @@ class ofApp : public ofBaseApp{
 		ofImage imgSave;
 		ofLight ambient, point;
 		ofFbo fbo;
-		ofSoundPlayer player;
+		//ofSoundPlayer player;
 		 static constexpr size_t nBandsToGet = 128;
 		 std::array<float, nBandsToGet>fftSmoothed{{0}};
+
+		  // Audio output and input methods
+    void audioOut(float * output, int bufferSize, int nChannels);
+    void audioIn(float * input, int bufferSize, int nChannels);
+
+    int		bufferSize;
+    int		sampleRate;
+    int     fftSize;
+
+    ofxMaxiSample sample;
+    maxiMix mymix;
+    double wave;
+    double outputs[2];
+    ofxMaxiFFT fft;
 
 	private:	
 	bool imGui();

@@ -1,3 +1,3 @@
 ofxAutoReloadedShader
-ofxImGui
-ofxPostProcessing       
+ofxImGui   
+ofxMaxim

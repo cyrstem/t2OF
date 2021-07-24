@@ -45,10 +45,21 @@ void ofApp::setup(){
     s.internalformat =GL_RGBA;
     fbo.allocate(s);
     
-        player.load("09 - Sea Castle.mp3");
-        // r = 0.0;
-        // g = 0.0;
-        // b = 0.0;
+    
+
+    sample.load(ofToDataPath("output.wav"));
+
+        
+
+    sampleRate 	= 44100; /* Sampling Rate */
+    bufferSize	= 512; /* Buffer Size. you have to fill this buffer with sound using the for loop in the audioOut method */
+
+    ofxMaxiSettings::setup(sampleRate, 2, bufferSize);
+    // the higher the value, the more accurate will be the fft analysis
+    fftSize = 1024;
+    fft.setup(fftSize, 512, 256);
+    /* this has to happen at the end of setup - it switches on the DAC */
+    ofSoundStreamSetup(2,2,this, sampleRate, bufferSize, 4);
 }
 
 //--------------------------------------------------------------
@@ -63,20 +74,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
- float * val = ofSoundGetSpectrum(nBandsToGet);
- float width = (float)(5*128) / nBandsToGet;
- for (int i = 0;i < nBandsToGet; i++){
-		
-		// let the smoothed value sink to zero:
-		fftSmoothed[i] *= 0.96f;
-		//ofLog()<<fftSmoothed[i];
-		// take the max, either the smoothed or the incoming:
-		if (fftSmoothed[i] < val[i]) fftSmoothed[i] = val[i];
-		ofDrawRectangle(100+i *width ,ofGetHeight()-100,width, -(fftSmoothed[i]*200));
-        if(val[i]){
-            ofLog()<<"bang?";
-        }
-	}
+     
+ 
     
 fbo.begin();
 cam.begin();
@@ -86,18 +85,40 @@ point.enable();
 ambient.enable();
 
 
+
+
+float something = float(ofGetWidth()) / float(fftSize) /2.f;
+       
+    for(int i = 0; i < fftSize ;i++){
+        int r = float(255) / float(fftSize) * i;
+        int g = 40;
+        int b = 255 - r;
+        //ofSetColor(r, g, b);
+        float outvar = 0.0f;
+// float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp=false)
+      // waves = ofMap(outvar,something*i,,0.0,100.0);
+
+        // ofDrawCircle(ofGetWidth()/2 +something * i,
+        //              ofGetHeight()/2, fft.magnitudes[i] * 2);
+
+        // ofDrawCircle(ofGetWidth()/2 -something * i,
+        //              ofGetHeight()/2, fft.magnitudes[i] * 2);
+        //ofDrawRectangle(i * 2, ofGetHeight(), 2, -(fft.magnitudesDB[i]) * 8);
+    }
+
+
 shader.begin();
     shader.setUniform1f("perlins",1.0);
     shader.setUniform1f("time",ofGetElapsedTimef());
     shader.setUniform1f("pointscale", 10.0);
     shader.setUniform1f("decay",decay);
     shader.setUniform1f("complex", 0.0);
-    shader.setUniform1f("waves",waves);
+    shader.setUniform1f("waves",waves );
     shader.setUniform1f("eqcolor", eqcolor);
     shader.setUniform1i("fragment",false);
     shader.setUniform1f("dnoise", 0.0);
     shader.setUniform1f("qnoise", 4.0);
-    shader.setUniform1f("r_color", red);
+    shader.setUniform1f("r_color", red );
     shader.setUniform1f("g_color", green);
     shader.setUniform1f("b_color",blue);
     shader.setUniform1i("speed",speed);
@@ -111,11 +132,7 @@ shader.begin();
      point.draw();
 cam.end();
 
-// for (int i = 0; i < bandsToGet; i++)
-// {
-//    ofDrawRectangle(100+i *width ,ofGetHeight()-100,width, -(val[i]*400));
-//    ofLog()<<val[i];
-// }
+
 
 fbo.end();
 fbo.draw(0,0); 
@@ -127,6 +144,28 @@ fbo.draw(0,0);
 	}
 
 
+    
+
+}
+//--------------------------------------------------------------
+void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
+    for (int i = 0; i < bufferSize; i++){
+        wave = sample.play();
+        //fft
+        if(fft.process(wave)){
+            fft.magsToDB();
+        }
+        mymix.stereo(wave, outputs, 0.5);
+        output[i*nChannels    ] = outputs[0];
+        output[i*nChannels + 1] = outputs[1];
+    }
+}
+
+//--------------------------------------------------------------
+void ofApp::audioIn(float * input, int bufferSize, int nChannels){
+    for(int i = 0; i < bufferSize; i++){
+        /* you can also grab the data out of the arrays*/
+    }
 }
 
 //--------------------------------------------------------------
@@ -141,11 +180,11 @@ void ofApp::keyPressed(int key){
     }
     if (key == 'p')
     {
-        player.play();
+       
     }
     if (key == 's')
     {
-        player.stop();
+         
     }
     
     
