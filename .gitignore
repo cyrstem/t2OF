@@ -9,6 +9,8 @@ obj/*
 *.qbs
 *.mp4
 *.mp3
+*.wav
+*.png
 *.svg
 of_vscode.sh
 config.make
