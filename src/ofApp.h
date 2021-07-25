@@ -42,6 +42,13 @@ class ofApp : public ofBaseApp{
     double outputs[2];
     ofxMaxiFFT fft;
 
+	float smoothedVolume = 0;
+    float scaledVolume = 0;
+    float decayRate = 0.05;
+    float threshold;
+	bool enableSmooth = true;
+
+
 	private:	
 	bool imGui();
 	ofxImGui::Gui gui;
@@ -65,4 +72,8 @@ class ofApp : public ofBaseApp{
 	ofParameter<float>red{"Red",0.4,0.0,1.0};
 	ofParameter<float>green{"Green",0.4,0.0,1.0};
 	ofParameter<float>blue{"Blue",0.4,0.0,1.0};
+
+	ofParameterGroup sound{"Sound"};
+	ofParameter<float>smoothedVal{"smoothedVal",0.97,0.1,0.99};
+	ofParameter<float>minThreshold{"minThreshold",0.1,0.1,0.3};
 };

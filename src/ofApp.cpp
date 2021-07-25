@@ -47,7 +47,7 @@ void ofApp::setup(){
     
     
 
-    sample.load(ofToDataPath("ecoa.wav"));
+    sample.load(ofToDataPath("output.wav"));
 
         
 
@@ -87,40 +87,40 @@ ambient.enable();
 
 
 
-float something = float(ofGetWidth()) / float(fftSize) /2.f;
+//float something = float(ofGetWidth()) / float(fftSize) /2.f;
        
-    for(int i = 0; i < fftSize ;i++){
-        int r = float(255) / float(fftSize) * i;
-        int g = 40;
-        int b = 255 - r;
-        //ofSetColor(r, g, b);
-        float outvar = 0.0f;
-      //  ofLog()<<fft.magnitudes[i];
+//     for(int i = 0; i < fftSize ;i++){
+//         int r = float(255) / float(fftSize) * i;
+//         int g = 40;
+//         int b = 255 - r;
+//         //ofSetColor(r, g, b);
+//         float outvar = 0.0f;
+//       //  ofLog()<<fft.magnitudes[i];
         
-// float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp=false)
-     // waves = ofMap(outvar,fft.magnitudes[i],fft.magnitudes[i]*2,0.000,100.0);
+// // float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp=false)
+//      // waves = ofMap(outvar,fft.magnitudes[i],fft.magnitudes[i]*2,0.000,100.0);
 
-        // ofDrawCircle(ofGetWidth()/2 +something * i,
-        //              ofGetHeight()/2, fft.magnitudes[i] * 2);
+//         // ofDrawCircle(ofGetWidth()/2 +something * i,
+//         //              ofGetHeight()/2, fft.magnitudes[i] * 2);
 
-        // ofDrawCircle(ofGetWidth()/2 -something * i,
-        //              ofGetHeight()/2, fft.magnitudes[i] * 2);
-        //ofDrawRectangle(i * 2, ofGetHeight(), 2, -(fft.magnitudesDB[i]) * 8);
-    }
+//         // ofDrawCircle(ofGetWidth()/2 -something * i,
+//         //              ofGetHeight()/2, fft.magnitudes[i] * 2);
+//         //ofDrawRectangle(i * 2, ofGetHeight(), 2, -(fft.magnitudesDB[i]) * 8);
+//     }
 
 
 shader.begin();
     shader.setUniform1f("perlins",1.0);
     shader.setUniform1f("time",ofGetElapsedTimef());
     shader.setUniform1f("pointscale", 10.0);
-    shader.setUniform1f("decay",decay);
+    shader.setUniform1f("decay",decay  );
     shader.setUniform1f("complex", 0.0);
-    shader.setUniform1f("waves",waves );
-    shader.setUniform1f("eqcolor", eqcolor *fft.magnitudes[0]);
+    shader.setUniform1f("waves",waves  * threshold );
+    shader.setUniform1f("eqcolor", eqcolor );
     shader.setUniform1i("fragment",false);
     shader.setUniform1f("dnoise", 0.0 );
     shader.setUniform1f("qnoise", 4.0);
-    shader.setUniform1f("r_color", red );
+    shader.setUniform1f("r_color", red *fft.magnitudes[2]  );
     shader.setUniform1f("g_color", green  );
     shader.setUniform1f("b_color",blue );
     shader.setUniform1i("speed",speed);
@@ -151,15 +151,39 @@ fbo.draw(0,0);
 }
 //--------------------------------------------------------------
 void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
+ float rms = 0.0;
+    int numCounted = 0;
+
     for (int i = 0; i < bufferSize; i++){
         wave = sample.play();
         //fft
         if(fft.process(wave)){
             fft.magsToDB();
         }
+
         mymix.stereo(wave, outputs, 0.5);
         output[i*nChannels    ] = outputs[0];
         output[i*nChannels + 1] = outputs[1];
+        float left = outputs [0];
+        float right = outputs[1];
+        rms += left * left;
+        rms += right * right;
+        numCounted += 2;
+    }
+    rms /= (float)numCounted;
+    rms = sqrt(rms);
+
+    if (enableSmooth) {
+        smoothedVolume *= smoothedVal;
+        smoothedVolume += 0.07 * rms;
+    } else {
+        smoothedVolume = rms;
+    }
+
+    //onset detection as in http://openframeworks.cc/ofBook/chapters/sound.html
+    threshold = ofLerp(threshold, minThreshold, decayRate);
+    if(rms > threshold) {
+        threshold = rms;
     }
 }
 
@@ -186,7 +210,7 @@ void ofApp::keyPressed(int key){
     }
     if (key == 's')
     {
-         
+        // sample.stop();
     }
     
     
@@ -228,6 +252,12 @@ bool ofApp::imGui()
                 ofxImGui::AddParameter(this->zoom);
                 ofxImGui::EndTree(mainSettings);
             }
+             if (ofxImGui::BeginTree(this->sound,mainSettings))
+            {
+                ofxImGui::AddParameter(this->smoothedVal);
+                ofxImGui::AddParameter(this->minThreshold);
+                ofxImGui::EndTree(mainSettings);
+            }
 
              if (ofxImGui::BeginTree(this->perlin,mainSettings))
             {
@@ -243,6 +273,7 @@ bool ofApp::imGui()
                  ofxImGui::AddParameter(this->blue);
                  ofxImGui::EndTree(mainSettings);
             } 
+            
             ofxImGui::EndWindow(mainSettings);
         }
     }
