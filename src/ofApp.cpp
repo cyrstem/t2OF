@@ -47,7 +47,7 @@ void ofApp::setup(){
     
     
 
-    sample.load(ofToDataPath("output.wav"));
+    sample.load(ofToDataPath("ecoa.wav"));
 
         
 
@@ -95,8 +95,10 @@ float something = float(ofGetWidth()) / float(fftSize) /2.f;
         int b = 255 - r;
         //ofSetColor(r, g, b);
         float outvar = 0.0f;
+      //  ofLog()<<fft.magnitudes[i];
+        
 // float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp=false)
-      // waves = ofMap(outvar,something*i,,0.0,100.0);
+     // waves = ofMap(outvar,fft.magnitudes[i],fft.magnitudes[i]*2,0.000,100.0);
 
         // ofDrawCircle(ofGetWidth()/2 +something * i,
         //              ofGetHeight()/2, fft.magnitudes[i] * 2);
@@ -114,15 +116,15 @@ shader.begin();
     shader.setUniform1f("decay",decay);
     shader.setUniform1f("complex", 0.0);
     shader.setUniform1f("waves",waves );
-    shader.setUniform1f("eqcolor", eqcolor);
+    shader.setUniform1f("eqcolor", eqcolor *fft.magnitudes[0]);
     shader.setUniform1i("fragment",false);
-    shader.setUniform1f("dnoise", 0.0);
+    shader.setUniform1f("dnoise", 0.0 );
     shader.setUniform1f("qnoise", 4.0);
     shader.setUniform1f("r_color", red );
-    shader.setUniform1f("g_color", green);
-    shader.setUniform1f("b_color",blue);
+    shader.setUniform1f("g_color", green  );
+    shader.setUniform1f("b_color",blue );
     shader.setUniform1i("speed",speed);
-        //ico.draw();
+  
     ofScale(2,2,2);
    
        mesh.draw();
