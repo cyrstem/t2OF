@@ -47,6 +47,7 @@ class ofApp : public ofBaseApp{
     float decayRate = 0.05;
     float threshold;
 	bool enableSmooth = true;
+	float something;
 
 
 	private:	

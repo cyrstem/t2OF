@@ -60,6 +60,7 @@ void ofApp::setup(){
     fft.setup(fftSize, 512, 256);
     /* this has to happen at the end of setup - it switches on the DAC */
     ofSoundStreamSetup(2,2,this, sampleRate, bufferSize, 4);
+    something =0.0f;
 }
 
 //--------------------------------------------------------------
@@ -84,43 +85,47 @@ ofEnableLighting();
 point.enable();
 ambient.enable();
 
+for (int i = 0; i < fftSize; i++)
+{
+    something = ofLerp(0.0f,1,fft.magnitudes[i]);
+}
 
 
 
 //float something = float(ofGetWidth()) / float(fftSize) /2.f;
        
-//     for(int i = 0; i < fftSize ;i++){
-//         int r = float(255) / float(fftSize) * i;
-//         int g = 40;
-//         int b = 255 - r;
-//         //ofSetColor(r, g, b);
-//         float outvar = 0.0f;
-//       //  ofLog()<<fft.magnitudes[i];
+    // for(int i = 0; i < fftSize ;i++){
+    //     int r = float(255) / float(fftSize) * i;
+    //     int g = 40;
+    //     int b = 255 - r;
+    //     //ofSetColor(r, g, b);
+    //     float outvar = 0.0f;
+      //  ofLog()<<fft.magnitudes[i];
         
-// // float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp=false)
-//      // waves = ofMap(outvar,fft.magnitudes[i],fft.magnitudes[i]*2,0.000,100.0);
+// float ofMap(float value, float inputMin, float inputMax, float outputMin, float outputMax, bool clamp=false)
+     // waves = ofMap(outvar,fft.magnitudes[i],fft.magnitudes[i]*2,0.000,100.0);
 
-//         // ofDrawCircle(ofGetWidth()/2 +something * i,
-//         //              ofGetHeight()/2, fft.magnitudes[i] * 2);
+        // ofDrawCircle(ofGetWidth()/2 +something * i,
+        //              ofGetHeight()/2, fft.magnitudes[i] * 2);
 
-//         // ofDrawCircle(ofGetWidth()/2 -something * i,
-//         //              ofGetHeight()/2, fft.magnitudes[i] * 2);
-//         //ofDrawRectangle(i * 2, ofGetHeight(), 2, -(fft.magnitudesDB[i]) * 8);
-//     }
+        // ofDrawCircle(ofGetWidth()/2 -something * i,
+        //              ofGetHeight()/2, fft.magnitudes[i] * 2);
+        //ofDrawRectangle(i * 2, ofGetHeight(), 2, -(fft.magnitudesDB[i]) * 8);
+    //}
 
 
 shader.begin();
     shader.setUniform1f("perlins",1.0);
     shader.setUniform1f("time",ofGetElapsedTimef());
     shader.setUniform1f("pointscale", 10.0);
-    shader.setUniform1f("decay",decay  );
+    shader.setUniform1f("decay",decay );
     shader.setUniform1f("complex", 0.0);
     shader.setUniform1f("waves",waves  * threshold );
     shader.setUniform1f("eqcolor", eqcolor );
     shader.setUniform1i("fragment",false);
     shader.setUniform1f("dnoise", 0.0 );
     shader.setUniform1f("qnoise", 4.0);
-    shader.setUniform1f("r_color", red *fft.magnitudes[2]  );
+    shader.setUniform1f("r_color", red *something   );
     shader.setUniform1f("g_color", green  );
     shader.setUniform1f("b_color",blue );
     shader.setUniform1i("speed",speed);
@@ -164,6 +169,8 @@ void ofApp::audioOut(float * output, int bufferSize, int nChannels) {
         mymix.stereo(wave, outputs, 0.5);
         output[i*nChannels    ] = outputs[0];
         output[i*nChannels + 1] = outputs[1];
+        //beat detection 
+
         float left = outputs [0];
         float right = outputs[1];
         rms += left * left;
